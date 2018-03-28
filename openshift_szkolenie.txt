@@ -1,0 +1,76 @@
+- mozna w deployment selector noda, nody maja labelki, podzelone na zony, na test/dev/prod
+- mozna w deployment config okreslic skalowanie na podstawie, na razie cpu, czyli jak wieksze uzycie to kolejna replica, jak mniejsze to w dol 
+- serwisy po dns, staly ip, miedzy podami/apkami komunikacja
+- pod pody volumeny, wspoldzielone, persistant
+- routing na zewnatrz
+- baza danych poza klastrem to komunikacja przez service
+- komunikacja przez mastera z uzytkownikami, mastery na zewnatrz, nie parzysta ilosc, min3
+-- komunikacja przez api 
+- wszystko poza datastore bezstanowe 
+- jest mechanizm automatycznego uzdrawiania, monitoruje czy pody zdrowe, opcjonalny, na poziomie deploymentu poda wlaczany
+-- spr otwartosci portu np. , skrypty wew poda 
+-- testy lifeness (czy dziala) i readyness - czy gotowy do przyjecia rzadan z zew.
+- mozliwy w routing podzial traffic na kilka serwisow i procentowe rozlozenia
+- node port - klient laczy sie na konkretny node, ale na wszystkich ten sam port wystawia , nie ma load balancing
+- external ip - daje load balancing, 
+- mozna egress service/router - przpuszcza z konkretnych ip zadania 
+- wew DNS, szukanie serwisow po nazwie 
+- domyslnie pody z projektu moga sie komunikowac w sieci , jest opcja dev wszystkie miedzy projektami 
+-- mozna laczyc projekty by mogly sie komunikowac
+-- mozna projekty globalne, dla wszystkich widoczne
+-- dodatkowo network policy - okreslamy precyzyjnie ktore pody ze soba sie komunikuja w projekcie (kind: NetworkPolicy)
+- agregacja logow do ELK
+-- dostep do logow ze swoich projektow 
+-- mozna 2 clustry, logi z projektow i z podow (metryki uzycia)
+-- dodatkowy rejestr metryk 
+- mozna sekrety wstrzykiwac do kontenera, dostepne w podach
+- definicja storage z deployent konfigu, wielkosc, typ storage, tworzone voumenny, zaleznie od storage uzyta wtyczka
+- nowy dynamiczny volume provisioning
+-- mniej pracy admina, miesce tylko monitoruje
+-- w konfigu jaki storage i wielkosc
+-- native storage, dyski montowane pod nody i w konfigu na jakich dyskach 
+- quotas and limits, definiujemy limity storage,cpu, ram na projekt, kilka , per uzytkownik , jak nas to spotka to zwalniamy zasoby , wylaczamy pody 
+- standard dostepu do service w aplikacji wew i na zew openshift 
+- rozne brokery - standardy tworzenie serwisow w openshift lub poza, powiazanie serwice z podem, do podu zmienne srodowiskowe wstrzykiwane, aplikacja musi umiec
+odczytac dane zmienne , definicje serwisow wystawione 
+- rozne budowy i deploy images
+-- np. z source github buduje zrodlo, poznaje technolgie, budow apki, buduje image i do registry, mozemy z obrazu deploy apki 
+- dodatkowo continue integration i delivery (build i deployment)
+-- na commit notyfikacja i automatycznie
+-- nowy image to wyzwalacz 
+-- tworzymy hooks 
+- jest jenkins w openshift, tam pipeline
+-- mozna na zew jenkins i plugin kubernetes
+- procces tagowania obrazu, deploy na dev, tag, na test, tag , na UAT, approve, POD, obraz kontenera budowany raz, tagowany i wrzucany na rozne srodowiska, mogracja obrazu po tagowaniu
+-- mozna promocej z pipeline, lub push/pull 
+- mzna wrzucic nowa wersje apki bez budowy kontenera, do tego samego po lekkiej zmianie , po weryfikacji robimy push obrazu i pipeline jenkins, lub commit do git i tam moze automat dzialac 
+----------
+project-name-user11
+
+route domain suffix :
+apps.54.190.13.174.xip.io
+
+https://master.54.190.13.174.xip.io:8443
+https://master.54.190.13.174.xip.io:8443/console/project/project-name-user11/overview
+oc login master.54.190.13.174.xip.io:8443
+user11/user11
+
+oc new-project mycliproject-user11 --description="My CLI Project" --display-name="CLI Project"
+oc get projects
+oc project mycliproject-user11 - wybor 
+oc status
+oc new-app redhatworkshops/welcome-php --name=welcome
+oc get pods
+oc get services
+oc expose service welcome --name=welcome --hostname=welcome.user11.apps.54.190.13.174.xip.io - tworzy route na serwisie 
+http://welcome.user11.apps.54.190.13.174.xip.io
+oc get all - pokaze wszystkie komponenty w proj 
+oc delete all --all - wyrzuci wszystko (imagestream, dc, pod,  service, route )
+oc get bc time -o json - show buildconfig 
+oc get builds - list of builds
+oc start-build time - startuje kolejny 
+oc logs build/time-1 - logi
+- image jest pushed do registry i startuje deployment , mozna podejrzec deployment konfig 
+oc get dc -o json
+oc expose service time - expose
+oc get routes
