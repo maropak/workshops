@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:int="http://www.springframework.org/schema/integration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/integration
+            http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+	<int:channel id="newsChannel">
+		<int:queue/>
+	</int:channel>
+
+	<int:chain input-channel="newsChannel" output-channel="confirmations">
+		<int:filter expression="payload.text != null and payload.author != null"
+					throw-exception-on-rejection="true"/>
+		<int:service-activator ref="confirmationService" /> <!-- no method, because only one -->
+		<int:service-activator ref="newsProcessor" method="processNews" />
+	</int:chain>
+
+	<bean id="confirmationService" class="com.example.integration.service.ConfirmationService">
+		<constructor-arg ref="confirmationRepository" />
+		<constructor-arg ref="confirmationProcessor" />
+	</bean>
+
+	<int:gateway id="confirmationProcessor"
+				 service-interface="com.example.integration.service.ConfirmationProcessor"
+				 default-request-channel="confirmations" />
+
+	<int:channel id="confirmations">
+		<int:queue capacity="10" />
+	</int:channel>
+
+	<int:logging-channel-adapter channel="errorChannel" 
+	                             expression="'filter rejected message with ' + payload.failedMessage.payload" 
+	                             level="WARN"/>
+</beans>

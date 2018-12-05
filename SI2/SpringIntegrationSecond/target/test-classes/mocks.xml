@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="newsProcessor" factory-method="mock" class="org.mockito.Mockito">
+        <constructor-arg value="com.example.integration.service.NewsProcessor" />
+    </bean>
+
+    <bean id="confirmationRepository" factory-method="mock" class="org.mockito.Mockito">
+        <constructor-arg value="com.example.integration.repository.ConfirmationRepository" />
+    </bean>
+
+</beans>

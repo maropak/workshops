@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns="http://www.springframework.org/schema/integration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int-mail="http://www.springframework.org/schema/integration/mail"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/mail http://www.springframework.org/schema/integration/mail/spring-integration-mail.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<int-jms:inbound-gateway request-destination-name="news.queue"
+			default-reply-queue-name="news.queue.confirmation"
+			request-channel="news"
+			reply-channel="confirmations"/>
+
+	<channel id="news">
+		<interceptors>
+			<wire-tap channel="loggingChannel"/>
+		</interceptors>
+	</channel>
+	
+	<logging-channel-adapter id="loggingChannel" log-full-message="true"/>
+
+	<beans:bean id="newsService" class="com.example.integration.service.NewsServiceImpl"/>
+	
+	<service-activator input-channel="news"
+	                   output-channel="confirmations" 
+					   ref="newsService" />
+					   
+	<publish-subscribe-channel id="confirmations"/>
+
+	<logging-channel-adapter id="confLof" channel="confirmations" log-full-message="true"/>
+	
+	<!--<service-activator input-channel="confirmations" output-channel="mails"-->
+	                   <!--ref="mailMessageCreator"/>-->
+
+	<!--<beans:bean id="mailMessageCreator" class="com.example.integration.components.MailMessageCreator"/>-->
+
+	<!--<int-mail:outbound-channel-adapter id="mails" host="localhost" />-->
+
+</beans:beans>
