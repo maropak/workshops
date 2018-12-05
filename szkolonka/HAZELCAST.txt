@@ -1,0 +1,78 @@
+http://docs.hazelcast.org/docs/latest/manual/html-single/index.html
+https://hazelcast.org/getting-started-with-hazelcast/
+https://hazelcast.org/use-cases/data-grid/
+
+1.
+dane trzymane w pamieci, ale na wielu nodach, kazdy ma to samo, jak 1 pada to nic sie nie dzieje
+2.
+nie ma mastera, najstarszy odpowiada za przydzielanie danych do nowego, jak najstarszy pada to kolejny jest najstarszy
+3.
+- wsparcie dla dystrybulowanych struktur danych i dystrybulowanych obliczen
+4.
+gdy pamiec/wyliczenia rosna nowi czlonkowie dynamicznie dolaczani do klastra - elastyczna skalowalnosc
+5.
+mozna tworzyc wlasne struktury danych jak obecne nie wystarczaja - Service Programming Interface
+6.
+moze byc tez 
+- key-value, 
+- cache, 
+- publish-subscribe
+- dystrybulowana konfiguracja
+- moze byc jako frot dla cassandra backend
+- as a real-time streamer for performance detection.
+- wsparcie dla cache i client w spring boot 
+https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-hazelcast
+- 
+7. dane na partycje co maja duzo entry
+- partycje powielane na wielu nodach
+- na jednym primary partycje inne to secondary
+- zapis czytanie entry gada z owner of primary partition
+- z default 271 partycji na jednym, jak kolejne to przerzucane primary partycje czesciowo
+8. konfiguracje
+a) xml
+- w dostarczonym zip jest hazelcast.xml z przykladowa konfiguracja i full - wszystkie opcje
+- wystarczy by go uzyc w normalnej aplikacji
+- mozna przez importy grupy, network i client
+-- mozna import z file, classpath, czyta tez env
+b) mozna kongig prgramistyczny
+c) z system properties
+d) spring 
+- specjalny namespace hz
+9. listenery na pewne akcje
+- nie powinny byc ciezkie, jak trzeba to do executora
+-- dla klastra, obiektów, cache, klenta
+10. Hazelcast Jet, 
+- distributed processing engine for fast stream and batch processing of large data sets
+11. dystrybulowane
+- executor service
+- scheduled executor service
+- entry processor - wywolanie operacji atomowo na input do mapy
+12.
+distributed queries on distributed maps 
+- zapytania wykonane na wielu mapach wg predykatu
+- laczone w 1 set wy
+- kryteria api i aggregatory
+13. Transakcje
+14. JCache
+15. JAVA
+- maven dependency
+- config - xml, java
+- z config mapy i operacje
+http://docs.hazelcast.org/docs/latest/manual/html-single/index.html#java-client
+16.
+serializacja zachodzi przy kazdym wywolaniu, add/update
+- rozne sposoby serializacji - interfejsy, gdy typy nie proste 
+17.
+sa narzedzia do zarzadzania 
+- monitorowanie przez JMX
+
+--------------
+------------------------------------------------------
+1. haselcast
+- performance 
+https://auth0.com/blog/beating-json-performance-with-protobuf/
+---
+https://github.com/hazelcast/hazelcast-openshift/blob/master/hazelcast-openshift-origin/Dockerfile
+https://hazelcast.org/documentation/
+http://docs.hazelcast.org/docs/3.10/manual/html-single/index.html#
+http://docs.hazelcast.org/docs/latest-development/manual/html/Distributed_Events/Event_Listener_for_Members/Listening_for_Map_Events.html
